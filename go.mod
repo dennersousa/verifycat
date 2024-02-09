@@ -1,4 +1,4 @@
-module api-verifycat
+module verifycat
 
 go 1.22rc1
 
