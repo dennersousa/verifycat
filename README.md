@@ -1,6 +1,5 @@
 # VerifyCat 
-![verifycat-api](https://github.com/Bichinhos-da-TI-Community/VerifyCat/assets/135276762/faebf395-a7fb-4b1e-b0c6-b351981127a0)
- 
+![verifycat-api](https://github.com/gatinhodev/verifycat/assets/135276762/8f4b2368-3733-4864-8c28-c7719edf0ece)
 ## Descrição
 O VerifyCat é um projeto inovador de API desenvolvido em Golang, projetado para realizar validações eficazes de dados essenciais, como CPF, CNPJ, URLs e e-mails. Essa ferramenta oferece a capacidade de verificar a autenticidade de informações cruciais por meio do envio de solicitações Curl contendo números de CPF, CNPJ, URLs ou endereços de e-mail.
 
