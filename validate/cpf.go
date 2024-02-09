@@ -1,9 +1,30 @@
-package validations
+package validate
 
 import (
+	"net/http"
 	"strconv"
 	"strings"
+
+	"github.com/gin-gonic/gin"
 )
+
+// IsValidCPFHandler é um handler para a rota /validate com tipo "cpf".
+func IsValidCPFHandler(c *gin.Context) {
+	var req ValidationRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	isValid := IsValidCPF(req.Value)
+
+	result := ValidationResult{
+		IsValid: isValid,
+		Message: "CPF",
+	}
+
+	c.JSON(http.StatusOK, result)
+}
 
 // IsValidCPF checks if a CPF (Brazilian ID number) is valid.
 // The input should be a string containing only numeric digits.

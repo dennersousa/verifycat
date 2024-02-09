@@ -1,8 +1,9 @@
-package validations
+package validate
 
 import (
-	"encoding/json"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
 )
 
 type ValidationRequest struct {
@@ -19,11 +20,10 @@ type CreditCardResult struct {
 	Brand string `json:"brand,omitempty"`
 }
 
-func ValidateHandler(w http.ResponseWriter, r *http.Request) {
+func ValidateHandler(c *gin.Context) {
 	var req ValidationRequest
-	err := json.NewDecoder(r.Body).Decode(&req)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -42,11 +42,13 @@ func ValidateHandler(w http.ResponseWriter, r *http.Request) {
 		isValid = IsValidURL(req.Value)
 		message = "URL"
 	case "creditcard":
-		// Using functions from creditcard.go
 		isValid, brand = ValidateCreditCard(req.Value)
 		message = "Credit Card"
+	case "email":
+		isValid = IsValidEmail(req.Value)
+		message = "Email"
 	default:
-		http.Error(w, "Invalid validation type", http.StatusBadRequest)
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid validation type"})
 		return
 	}
 
@@ -71,6 +73,5 @@ func ValidateHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(result)
+	c.JSON(http.StatusOK, result)
 }
