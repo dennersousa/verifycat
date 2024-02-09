@@ -1,41 +1,62 @@
-package validations
+package validate
 
 import (
+	"net/http"
 	"regexp"
 	"strconv"
+
+	"github.com/gin-gonic/gin"
 )
 
-// IsValidCNPJ checks if a given CNPJ (Brazilian National Register of Legal Entities) is valid.
+// IsValidCNPJHandler é um handler para a rota /validate com tipo "cnpj".
+func IsValidCNPJHandler(c *gin.Context) {
+	var req ValidationRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	isValid := IsValidCNPJ(req.Value)
+
+	result := ValidationResult{
+		IsValid: isValid,
+		Message: "CNPJ",
+	}
+
+	c.JSON(http.StatusOK, result)
+}
+
+// IsValidCNPJ verifica se um CNPJ é válido.
 func IsValidCNPJ(cnpj string) bool {
-	// Remove non-digits from the input CNPJ
+	// Remove não dígitos do CNPJ
 	re := regexp.MustCompile(`[^\d]`)
 	cnpj = re.ReplaceAllString(cnpj, "")
 
-	// Check if the CNPJ is empty or does not have 14 digits
+	// Verifique se o CNPJ está vazio ou não tem 14 dígitos
 	if cnpj == "" || len(cnpj) != 14 {
 		return false
 	}
 
-	// Check for repeated digits in the CNPJ
+	// Verifique se há dígitos repetidos no CNPJ
 	for i := 1; i < len(cnpj); i++ {
 		if cnpj[i] != cnpj[i-1] {
-			// Digits are not repeated, continue with the validation
+			// Dígitos não são repetidos, continue com a validação
 			break
 		}
 		if i == len(cnpj)-1 {
-			// All digits are repeated, return false
+			// Todos os dígitos são repetidos, retorne false
 			return false
 		}
 	}
 
-	// Validate CNPJ's verification digits
+	// Valide os dígitos de verificação do CNPJ
 	size := len(cnpj) - 2
 	numbers := cnpj[:size]
 	digits := cnpj[size:]
 	sum := 0
 	pos := size - 7
 
-	// Calculate the first verification digit
+	// Calcule o primeiro dígito de verificação
 	for i := size; i >= 1; i-- {
 		num, _ := strconv.Atoi(string(numbers[size-i]))
 		sum += num * pos
@@ -51,13 +72,13 @@ func IsValidCNPJ(cnpj string) bool {
 		result = 11 - result
 	}
 
-	// Compare the calculated digit with the actual first verification digit
+	// Compare o dígito calculado com o verdadeiro primeiro dígito de verificação
 	firstDigit, _ := strconv.Atoi(string(digits[0]))
 	if result != firstDigit {
 		return false
 	}
 
-	// Calculate the second verification digit
+	// Calcule o segundo dígito de verificação
 	size++
 	numbers = cnpj[:size]
 	sum = 0
@@ -79,7 +100,7 @@ func IsValidCNPJ(cnpj string) bool {
 		result = 11 - result
 	}
 
-	// Compare the calculated digit with the actual second verification digit
+	// Compare o dígito calculado com o verdadeiro segundo dígito de verificação
 	secondDigit, _ := strconv.Atoi(string(digits[1]))
 	return result == secondDigit
 }
