@@ -85,7 +85,7 @@ curl -X POST http://localhost:8080/validate -H "Content-Type: application/json" 
 
 ## Contributing
 
-Feel free to contribute by opening issues, providing feedback, or submitting pull requests. Please adhere to the [Contributing Guidelines](CONTRIBUTING.md).
+Feel free to contribute by opening issues, providing feedback, or submitting pull requests.
 
 ## License
 
