@@ -67,6 +67,20 @@ curl -X POST http://localhost:8080/validate -H "Content-Type: application/json" 
 - `email`: Email address
 - `creditcard`: Credit card number
 
+## RESTful Architecture
+
+The API VerifyCat follows the principles of REST, including:
+
+- **Identifiable Resources:** Each validation type (CPF, CNPJ, URL, etc.) is treated as an identifiable resource. Operations are performed on these resources through specific URLs.
+
+- **Standard HTTP Operations:** CRUD operations (Create, Read, Update, Delete) are mapped to standard HTTP operations. In this code, the main operation is validation, performed through a POST request to the `/validate` resource.
+
+- **Statelessness:** Each client request to the server contains all the information needed to understand and process the request. There is no dependency on intermediate states between requests.
+
+- **Resource Representation:** Resources are represented in JSON in the body of HTTP responses. The response is a representation of the current state of the resource (e.g., whether a CPF is valid or not).
+
+- **HATEOAS (Hypermedia As The Engine Of Application State):** While the provided code does not explicitly include links to other resources in the HATEOAS style, the concept is embedded in the general principle that the client interacts with the API through representations of resources and states provided in responses.
+
 ## Usage
 
 1. **Clone the Repository:**
