@@ -2,7 +2,7 @@
 
 # VerifyCat  
 
-**VerifyCat** is a versatile validation API designed to handle various types of validations, including CPF (Brazilian ID number), CNPJ (Brazilian legal entity number), URL, email, and credit card numbers. This README.md file provides comprehensive information on the project, its architecture, available functionalities, and usage instructions.
+**VerifyCat** is a versatile validation API designed to handle various types of validations, including CPF (Brazilian ID number), CNPJ (Brazilian legal entity number), URL, email, and credit card numbers. 
 
 ## Table of Contents
 
