@@ -20,6 +20,15 @@ type CreditCardResult struct {
 	Brand string `json:"brand,omitempty"`
 }
 
+// Mapeamento de tipos para funções de validação
+var validationFuncMap = map[string]func(string) (bool, string){
+	"cpf":        func(value string) (bool, string) { return IsValidCPF(value), "" },
+	"cnpj":       func(value string) (bool, string) { return IsValidCNPJ(value), "" },
+	"url":        func(value string) (bool, string) { return IsValidURL(value), "" },
+	"creditcard": ValidateCreditCard,
+	"email":      func(value string) (bool, string) { return IsValidEmail(value), "" },
+}
+
 func ValidateHandler(c *gin.Context) {
 	var req ValidationRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -27,29 +36,19 @@ func ValidateHandler(c *gin.Context) {
 		return
 	}
 
-	var isValid bool
-	var message string
-	var brand string
-
-	switch req.Type {
-	case "cpf":
-		isValid = IsValidCPF(req.Value)
-		message = "CPF"
-	case "cnpj":
-		isValid = IsValidCNPJ(req.Value)
-		message = "CNPJ"
-	case "url":
-		isValid = IsValidURL(req.Value)
-		message = "URL"
-	case "creditcard":
-		isValid, brand = ValidateCreditCard(req.Value)
-		message = "Credit Card"
-	case "email":
-		isValid = IsValidEmail(req.Value)
-		message = "Email"
-	default:
+	validationFunc, exists := validationFuncMap[req.Type]
+	if !exists {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid validation type"})
 		return
+	}
+
+	var isValid bool
+	var brand string
+
+	if req.Type == "creditcard" {
+		isValid, brand = validationFunc(req.Value)
+	} else {
+		isValid, _ = validationFunc(req.Value)
 	}
 
 	var result interface{}
@@ -60,7 +59,7 @@ func ValidateHandler(c *gin.Context) {
 		}{
 			ValidationResult: ValidationResult{
 				IsValid: isValid,
-				Message: message,
+				Message: req.Type,
 			},
 			CreditCard: CreditCardResult{
 				Brand: brand,
@@ -69,7 +68,7 @@ func ValidateHandler(c *gin.Context) {
 	} else {
 		result = ValidationResult{
 			IsValid: isValid,
-			Message: message,
+			Message: req.Type,
 		}
 	}
 
