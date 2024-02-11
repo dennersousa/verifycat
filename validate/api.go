@@ -56,7 +56,7 @@ func ValidateHandler(c *gin.Context) {
 	if req.Type == "creditcard" {
 		result = struct {
 			ValidationResult
-			CreditCard CreditCardResult `json:"creditCard,omitempty"`
+			CreditCard CreditCardResult `json:"creditcard,omitempty"`
 		}{
 			ValidationResult: ValidationResult{
 				IsValid: isValid,
