@@ -33,6 +33,11 @@ func IsValidCPF(cpf string) bool {
 	cpf = strings.ReplaceAll(cpf, ".", "")
 	cpf = strings.ReplaceAll(cpf, "-", "")
 
+	// Check if the CPF contains only numeric digits
+	if _, err := strconv.Atoi(cpf); err != nil {
+		return false
+	}
+
 	// Check for known invalid CPFs
 	if strings.Count(cpf, string(cpf[0])) == 11 {
 		return false
@@ -41,11 +46,16 @@ func IsValidCPF(cpf string) bool {
 	// Extract digits from CPF
 	digits := make([]int, 11)
 	for i := 0; i < 11; i++ {
-		digit, err := strconv.Atoi(string(cpf[i]))
-		if err != nil {
-			// Handle error as needed
+		if i < len(cpf) {
+			digit, err := strconv.Atoi(string(cpf[i]))
+			if err != nil {
+				// Handle error as needed
+			}
+			digits[i] = digit
+		} else {
+			// Handle the case where the string is too short
+			return false
 		}
-		digits[i] = digit
 	}
 
 	// Calculate the first verification digit
