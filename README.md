@@ -2,34 +2,34 @@
 
 # VerifyCat  
 
-**VerifyCat** is a versatile validation API designed to handle various types of validations, including CPF (Brazilian ID number), CNPJ (Brazilian legal entity number), URL, email, and credit card numbers. 
+**VerifyCat** é uma API de validação versátil projetada para lidar com vários tipos de validações, incluindo CPF, CNPJ, URL, E-mails e números de cartão de crédito (até o momento).
 
-## Table of Contents
+## Sumário
 
-- [Overview](#overview)
-- [Architecture](#architecture)
-- [API Endpoints](#api-endpoints)
-- [Usage](#usage)
-- [Contributing](#contributing)
-- [License](#license)
+- [Visão Geral](#visão-geral)
+- [Arquitetura](#arquitetura)
+- [Endpoints da API](#endpoints-da-api)
+- [Uso](#uso)
+- [Contribuições](#contribuições)
+- [Licença](#licença)
 
-## Overview
+## Visão Geral
 
-VerifyCat is built using the [Gin](https://github.com/gin-gonic/gin) framework for handling HTTP requests and providing a fast and efficient web server. The project is structured to accommodate different validation types, each implemented in a separate file within the `validate` package.
+VerifyCat é construído usando o framework [Gin](https://github.com/gin-gonic/gin) para lidar com solicitações HTTP e fornecer um servidor web rápido e eficiente. O projeto é estruturado para acomodar diferentes tipos de validação, cada um implementado em um arquivo separado dentro do pacote `validate`.
 
-## Architecture
+## Arquitetura
 
-The main entry point of the application is the `verifycat_api.go` file. It sets up the Gin router and defines the endpoint for validation at `/validate`. The validation logic is delegated to specific handlers in the `validate` package.
+O ponto de entrada principal da aplicação é o arquivo `verifycat_api.go`. Ele configura o roteador Gin e define o endpoint para validação em `/validate`. A lógica de validação é delegada para manipuladores específicos no pacote `validate`.
 
-The `validate` package contains individual files (`cpf.go`, `cnpj.go`, `url.go`, `email.go`, and `creditcard.go`) for each validation type. These files house the validation logic and request handling specific to their validation type.
+O pacote `validate` contém arquivos individuais (`cpf.go`, `cnpj.go`, `url.go`, `email.go` e `creditcard.go`) para cada tipo de validação. Esses arquivos contêm a lógica de validação e manipulação de solicitações específicas para seu tipo de validação.
 
-## API Endpoints
+## Endpoints da API
 
 ### `POST /validate`
 
-This endpoint supports validation for various types of data. The payload should be in JSON format, containing the `type` (validation type) and `value` (data to be validated).
+Este endpoint suporta validação para vários tipos de dados. A carga útil deve estar no formato JSON, contendo o `type` (tipo de validação) e `value` (dados a serem validados).
 
-- **Request Payload Example:**
+- **Exemplo de Carga Útil da Solicitação:**
   ```json
   {
     "type": "cpf",
@@ -37,7 +37,7 @@ This endpoint supports validation for various types of data. The payload should 
   }
   ```
 
-- **Response Example:**
+- **Exemplo de Resposta:**
   ```json
   {
     "isValid": true,
@@ -45,13 +45,13 @@ This endpoint supports validation for various types of data. The payload should 
   }
   ```
 
-### CURL Request Example
+### Exemplo de Solicitação CURL
 
 ```bash
 curl -X POST http://localhost:8080/validate -H "Content-Type: application/json" -d '{"type": "cpf", "value": "123.456.789-09"}'
 ```
 
-- **CURL Response Example:**
+- **Exemplo de Resposta CURL:**
   ```json
   {
     "isValid": true,
@@ -59,48 +59,48 @@ curl -X POST http://localhost:8080/validate -H "Content-Type: application/json" 
   }
   ```
 
-### Supported Validation Types
+### Tipos de Validação Suportados
 
-- `cpf`: Brazilian ID number
-- `cnpj`: Brazilian legal entity number
+- `cpf`: Número de identificação brasileiro (CPF)
+- `cnpj`: Número de entidade legal brasileira (CNPJ)
 - `url`: URL
-- `email`: Email address
-- `creditcard`: Credit card number
+- `email`: Endereço de e-mail
+- `creditcard`: Número de cartão de crédito
 
-## RESTful Architecture
+## Arquitetura RESTful
 
-The API VerifyCat follows the principles of REST, including:
+A API VerifyCat segue os princípios RESTful, incluindo:
 
-- **Identifiable Resources:** Each validation type (CPF, CNPJ, URL, etc.) is treated as an identifiable resource. Operations are performed on these resources through specific URLs.
+- **Recursos Identificáveis:** Cada tipo de validação (CPF, CNPJ, URL, etc.) é tratado como um recurso identificável. As operações são realizadas nesses recursos por meio de URLs específicos.
 
-- **Standard HTTP Operations:** CRUD operations (Create, Read, Update, Delete) are mapped to standard HTTP operations. In this code, the main operation is validation, performed through a POST request to the `/validate` resource.
+- **Operações HTTP Padrão:** Operações CRUD (Criar, Ler, Atualizar, Excluir) são mapeadas para operações HTTP padrão. Neste código, a principal operação é a validação, realizada por meio de uma solicitação POST para o recurso `/validate`.
 
-- **Statelessness:** Each client request to the server contains all the information needed to understand and process the request. There is no dependency on intermediate states between requests.
+- **Estado Sem Sessão:** Cada solicitação do cliente ao servidor contém todas as informações necessárias para entender e processar a solicitação. Não há dependência de estados intermediários entre solicitações.
 
-- **Resource Representation:** Resources are represented in JSON in the body of HTTP responses. The response is a representation of the current state of the resource (e.g., whether a CPF is valid or not).
+- **Representação de Recursos:** Os recursos são representados em JSON no corpo das respostas HTTP. A resposta é uma representação do estado atual do recurso (por exemplo, se um CPF é válido ou não).
 
-- **HATEOAS (Hypermedia As The Engine Of Application State):** While the provided code does not explicitly include links to other resources in the HATEOAS style, the concept is embedded in the general principle that the client interacts with the API through representations of resources and states provided in responses.
+- **HATEOAS (Hypermedia As The Engine Of Application State):** Embora o código fornecido não inclua explicitamente links para outros recursos no estilo HATEOAS, o conceito está incorporado no princípio geral de que o cliente interage com a API por meio de representações de recursos e estados fornecidos em respostas.
 
-## Usage
+## Uso
 
-1. **Clone the Repository:**
+1. **Clone o Repositório:**
    ```bash
    git clone https://github.com/your-username/verifycat.git
    cd verifycat
    ```
 
-2. **Run the Application:**
+2. **Execute a Aplicação:**
    ```bash
    go run verifycat_api.go
    ```
 
-3. **Make API Requests:**
-   - Use your preferred API client (e.g., cURL, Postman) to send POST requests to `http://localhost:8080/validate` with the appropriate payload.
+3. **Faça Solicitações à API:**
+   - Use seu cliente de API preferido (por exemplo, cURL, Postman) para enviar solicitações POST para `http://localhost:8080/validate` com a carga útil apropriada.
 
-## Contributing
+## Contribuições
 
-Feel free to contribute by opening issues, providing feedback, or submitting pull requests.
+Sinta-se à vontade para contribuir abrindo problemas, fornecendo feedback ou enviando pull requests.
 
-## License
+## Licença
 
-This project is licensed under the AGPL V3 License - see the [LICENSE](LICENSE) file for details.
+Este projeto está licenciado sob a Licença AGPL V3 - consulte o arquivo [LICENSE](LICENSE) para obter detalhes.
