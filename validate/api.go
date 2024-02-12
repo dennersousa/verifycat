@@ -6,20 +6,24 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// ValidationRequest representa a estrutura de dados para a requisição de validação.
 type ValidationRequest struct {
-	Type  string `json:"type"`
-	Value string `json:"value"`
+	Type  string `json:"type"`  // Tipo de dado a ser validado (ex: "cpf", "cnpj", "url", "creditcard", "email").
+	Value string `json:"value"` // Valor do dado a ser validado.
 }
 
+// ValidationResult representa o resultado da validação.
 type ValidationResult struct {
-	IsValid bool   `json:"isValid"`
-	Message string `json:"message"`
+	IsValid bool   `json:"isValid"` // Indica se o dado é válido ou não.
+	Message string `json:"message"` // Mensagem relacionada à validação.
 }
 
+// CreditCardResult representa o resultado específico para validação de cartão de crédito.
 type CreditCardResult struct {
-	Brand string `json:"brand,omitempty"`
+	Brand string `json:"brand,omitempty"` // Marca (bandeira) do cartão de crédito, se aplicável.
 }
 
+// ValidateHandler é o manipulador para a rota de validação.
 func ValidateHandler(c *gin.Context) {
 	var req ValidationRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -43,12 +47,12 @@ func ValidateHandler(c *gin.Context) {
 		message = "URL"
 	case "creditcard":
 		isValid, brand = ValidateCreditCard(req.Value)
-		message = "Credit Card"
+		message = "Cartão de Crédito"
 	case "email":
 		isValid = IsValidEmail(req.Value)
 		message = "Email"
 	default:
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid validation type"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Tipo de validação inválido"})
 		return
 	}
 
