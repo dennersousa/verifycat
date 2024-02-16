@@ -45,8 +45,7 @@ Este endpoint suporta validação para vários tipos de dados. A carga útil dev
   }
   ```
 
-### Exemplo de Solicitação CURL
-
+- **Exemplo de Solicitação CURL**
 ```bash
 curl -X POST http://localhost:8080/validate -H "Content-Type: application/json" -d '{"type": "cpf", "value": "123.456.789-09"}'
 ```
