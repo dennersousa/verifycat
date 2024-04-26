@@ -84,7 +84,7 @@ A API VerifyCat segue os princípios RESTful, incluindo:
 
 1. **Clone o Repositório:**
    ```bash
-   git clone https://github.com/your-username/verifycat.git
+   git clone https://github.com/marcuscarvalhodev/verifycat.git
    cd verifycat
    ```
 
